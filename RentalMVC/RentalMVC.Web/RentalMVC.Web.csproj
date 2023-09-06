@@ -15,4 +15,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RentalMVC.Application\RentalMVC.Application.csproj" />
+    <ProjectReference Include="..\RentalMVC.Infrastructure\RentalMVC.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
