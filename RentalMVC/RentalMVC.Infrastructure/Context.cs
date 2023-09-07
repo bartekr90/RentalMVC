@@ -35,22 +35,25 @@ public class Context : IdentityDbContext
         builder.Entity<ReservationPosition>()
                .HasOne(rp => rp.Device)
                .WithMany(d => d.Positions)
-               .HasForeignKey(rp => rp.DeviceId);
+               .HasForeignKey(rp => rp.DeviceId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<ReservationPosition>()
                .HasOne(rp => rp.DeviceType)
                .WithMany(dt => dt.Positions)
-               .HasForeignKey(rp => rp.DeviceTypeId);
+               .HasForeignKey(rp => rp.DeviceTypeId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<ReservationPosition>()
                .HasOne(rp => rp.Reservation)
                .WithMany(r => r.Positions)
-               .HasForeignKey(rp => rp.ReservationId);
+               .HasForeignKey(rp => rp.ReservationId)
+               .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<ContactDetail>()
                .HasOne(cd => cd.Adress)
                .WithOne(a => a.ContactDetail)
-               .HasForeignKey<ContactDetail>(cd => cd.AdressId);       
+               .HasForeignKey<ContactDetail>(cd => cd.AdressId);
 
         builder.Entity<Node>(entity =>
         {
@@ -61,7 +64,7 @@ public class Context : IdentityDbContext
                 .HasForeignKey(x => x.ParentNodeId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
-        }); 
+        });
 
     }
 }
