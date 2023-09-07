@@ -44,4 +44,10 @@ public class PositionRepository : IPositionRepository
         _context.ReservationPositions.Update(reservationPosition);
         await _context.SaveChangesAsync(cancellationToken);
     }
+    public async Task<int> CreateAsync(IEnumerable<ReservationPosition> reservationPositions, CancellationToken cancellationToken = default)
+    {
+        _context.ReservationPositions.AddRange(reservationPositions);
+        return await _context.SaveChangesAsync(cancellationToken);
+    }
+
 }

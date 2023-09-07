@@ -11,4 +11,5 @@ public interface IPositionRepository
     IQueryable<ReservationPosition> GetPositionsForReservation(int reservationId);
     IQueryable<ReservationPosition> GetPositionsForType(int deviceTypeId);
     Task UpdateAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default);
+    Task<int> CreateAsync(IEnumerable<ReservationPosition> reservationPositions, CancellationToken cancellationToken = default);
 }
