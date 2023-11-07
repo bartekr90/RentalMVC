@@ -5,7 +5,7 @@ namespace RentalMVC.Domain.Model.Entity;
 public class Device : BaseEntity
 {
     public required string Name { get; set; }
-    public required string Description { get; set; }
+    public string? Description { get; set; }
     public bool IsAvailable { get; set; }
     public required string SerialNr { get; set; }
     public decimal IndividualPrice { get; set; }

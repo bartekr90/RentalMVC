@@ -60,7 +60,7 @@ public class Context : IdentityDbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Name);
             entity.HasOne(x => x.ParentNode)
-                .WithMany(x => x.SubNodes)
+                .WithMany(x => x.ChildNodes)
                 .HasForeignKey(x => x.ParentNodeId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);

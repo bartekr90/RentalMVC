@@ -10,5 +10,5 @@ public class Node : BaseEntity
     public int? ParentNodeId { get; set; }
     public virtual required DeviceType DeviceType { get; set; }
     public virtual required Node ParentNode { get; set; }
-    public virtual ICollection<Node> SubNodes { get; set; } = new List<Node>();
+    public virtual ICollection<Node> ChildNodes { get; set; } = new List<Node>();
 }

@@ -20,6 +20,20 @@ public class ReservationRepository : IReservationRepository
         return reservation.Id;
     }
 
+    public async Task<Reservation?> GetActiveReservationAsync(int id, CancellationToken cancellationToken = default) =>
+        await _context.Reservations
+        .Where(r => r.Active && !r.Deleted && r.Id == id)
+        .FirstOrDefaultAsync(cancellationToken);
+
+    public async Task<List<Reservation>> GetActiveReservationsAsync(CancellationToken cancellationToken = default) =>
+        await _context.Reservations
+        .Where(r => r.Active && !r.Deleted)
+        .ToListAsync(cancellationToken);
+
+    public IQueryable<Reservation> GetActiveReservations() =>
+        _context.Reservations
+            .Where(r => r.Active && !r.Deleted);    
+
     public async Task<Reservation?> GetReservationAsync(int id, CancellationToken cancellationToken = default) =>
         await _context.Reservations
             .Include(r => r.Positions)

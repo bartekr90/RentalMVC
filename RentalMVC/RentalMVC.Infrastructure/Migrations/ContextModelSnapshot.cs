@@ -251,7 +251,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -263,11 +262,10 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
@@ -297,7 +295,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -317,11 +314,10 @@ namespace RentalMVC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNr")
@@ -355,7 +351,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -368,7 +363,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DeviceTypeId")
@@ -380,11 +374,10 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -420,7 +413,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -433,7 +425,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullPath")
@@ -443,11 +434,10 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<bool>("HasDevices")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -486,7 +476,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -504,11 +493,10 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<bool>("HasSubNodes")
                         .HasColumnType("bit");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -537,14 +525,12 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Comments")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CustomerContact")
@@ -564,14 +550,16 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("DuringExecution")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("StartDate")
@@ -604,7 +592,6 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Deleted")
@@ -625,11 +612,10 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<int>("EquipmentQuantity")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("ModifiedAt")
+                    b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("ModifiedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReservationId")
@@ -739,7 +725,7 @@ namespace RentalMVC.Infrastructure.Migrations
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Node", b =>
                 {
                     b.HasOne("RentalMVC.Domain.Model.Entity.Node", "ParentNode")
-                        .WithMany("SubNodes")
+                        .WithMany("ChildNodes")
                         .HasForeignKey("ParentNodeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -793,10 +779,10 @@ namespace RentalMVC.Infrastructure.Migrations
 
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Node", b =>
                 {
+                    b.Navigation("ChildNodes");
+
                     b.Navigation("DeviceType")
                         .IsRequired();
-
-                    b.Navigation("SubNodes");
                 });
 
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Reservation", b =>
