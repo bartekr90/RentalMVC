@@ -17,7 +17,7 @@ namespace RentalMVC.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -47,6 +47,38 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "Admin",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "Lessor",
+                            Name = "Lessor",
+                            NormalizedName = "LESSOR"
+                        },
+                        new
+                        {
+                            Id = "Employee",
+                            Name = "Employee",
+                            NormalizedName = "EMPLOYEE"
+                        },
+                        new
+                        {
+                            Id = "SuperEmployee",
+                            Name = "SuperEmployee",
+                            NormalizedName = "SUPEREMPLOYEE"
+                        },
+                        new
+                        {
+                            Id = "Client",
+                            Name = "Client",
+                            NormalizedName = "CLIENT"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -224,119 +256,7 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Adress", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("AddressPartOne")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddressPartTwo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("ModifiedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Adresses");
-                });
-
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.ContactDetail", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("AdressId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTimeOffset?>("ModifiedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNr")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SecondName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AdressId")
-                        .IsUnique();
-
-                    b.ToTable("ContactDetails");
-                });
-
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Device", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Device", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -350,8 +270,9 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -368,11 +289,17 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<int>("DeviceTypeId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("IndividualPrice")
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("IndividualPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("LessorId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
@@ -384,18 +311,29 @@ namespace RentalMVC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SerialNr")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatorId");
+
                     b.HasIndex("DeviceTypeId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LessorId");
+
+                    b.HasIndex("RentalId");
 
                     b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceType", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -412,8 +350,9 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -427,12 +366,18 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("FullPath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("HasDevices")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("LessorId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
@@ -444,24 +389,35 @@ namespace RentalMVC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NodetId")
+                    b.Property<int>("NodeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
 
                     b.Property<int>("TotalDevices")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NodetId")
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LessorId");
+
+                    b.HasIndex("NodeId")
                         .IsUnique();
+
+                    b.HasIndex("RentalId");
 
                     b.ToTable("DeviceTypes");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Node", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Node", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -475,8 +431,9 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -490,8 +447,14 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<int?>("DeviceTypeId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("HasSubNodes")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("LessorId")
+                        .HasColumnType("int");
 
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("datetimeoffset");
@@ -506,11 +469,83 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<int?>("ParentNodeId")
                         .HasColumnType("int");
 
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("DeviceTypeId")
+                        .IsUnique()
+                        .HasFilter("[DeviceTypeId] IS NOT NULL");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("LessorId");
 
                     b.HasIndex("ParentNodeId");
 
+                    b.HasIndex("RentalId");
+
                     b.ToTable("Nodes");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Rental", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LessorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MainContactDataId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt")
+                        .IsUnique();
+
+                    b.HasIndex("LessorId")
+                        .IsUnique();
+
+                    b.HasIndex("MainContactDataId")
+                        .IsUnique();
+
+                    b.ToTable("Rentals");
                 });
 
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Reservation", b =>
@@ -524,22 +559,22 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Comments")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerContact")
+                    b.Property<string>("CreatorId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -562,6 +597,13 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RentalName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTimeOffset>("StartDate")
                         .HasColumnType("datetimeoffset");
 
@@ -573,6 +615,12 @@ namespace RentalMVC.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("RentalId");
 
                     b.ToTable("Reservations");
                 });
@@ -588,11 +636,15 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
@@ -618,6 +670,9 @@ namespace RentalMVC.Infrastructure.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
@@ -629,13 +684,427 @@ namespace RentalMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CreatorId");
+
                     b.HasIndex("DeviceId");
 
                     b.HasIndex("DeviceTypeId");
 
+                    b.HasIndex("RentalId");
+
                     b.HasIndex("ReservationId");
 
                     b.ToTable("ReservationPositions");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("AddressPartOne")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AddressPartTwo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MainContactDataId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RentalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserDetailId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId")
+                        .IsUnique();
+
+                    b.HasIndex("MainContactDataId")
+                        .IsUnique();
+
+                    b.HasIndex("RentalId");
+
+                    b.HasIndex("UserDetailId")
+                        .IsUnique();
+
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("LessorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NamePart1")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NamePart2")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RentalId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("LessorId");
+
+                    b.HasIndex("RentalId");
+
+                    b.ToTable("ContactDatas");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Employee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MainContactDataId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RentalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("MainContactDataId")
+                        .IsUnique();
+
+                    b.HasIndex("RentalId");
+
+                    b.HasIndex("UserDetailId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("CanLaunchRental")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MainContactDataId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RentalId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("MainContactDataId")
+                        .IsUnique()
+                        .HasFilter("[MainContactDataId] IS NOT NULL");
+
+                    b.HasIndex("RentalId")
+                        .IsUnique()
+                        .HasFilter("[RentalId] IS NOT NULL");
+
+                    b.HasIndex("UserDetailId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Lessors");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("EmployeeId1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LessorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LessorId1")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique()
+                        .HasFilter("[ClientId] IS NOT NULL");
+
+                    b.HasIndex("CreatorId")
+                        .IsUnique();
+
+                    b.HasIndex("EmployeeId")
+                        .IsUnique()
+                        .HasFilter("[EmployeeId] IS NOT NULL");
+
+                    b.HasIndex("EmployeeId1");
+
+                    b.HasIndex("LessorId")
+                        .IsUnique()
+                        .HasFilter("[LessorId] IS NOT NULL");
+
+                    b.HasIndex("LessorId1");
+
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -689,60 +1158,141 @@ namespace RentalMVC.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.ContactDetail", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Device", b =>
                 {
-                    b.HasOne("RentalMVC.Domain.Model.Entity.Adress", "Adress")
-                        .WithOne("ContactDetail")
-                        .HasForeignKey("RentalMVC.Domain.Model.Entity.ContactDetail", "AdressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Adress");
-                });
-
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Device", b =>
-                {
-                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceType", "DeviceType")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", "DeviceType")
                         .WithMany("Devices")
                         .HasForeignKey("DeviceTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Employee", null)
+                        .WithMany("Devices")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", null)
+                        .WithMany("Devices")
+                        .HasForeignKey("LessorId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Devices")
+                        .HasForeignKey("RentalId");
 
                     b.Navigation("DeviceType");
+
+                    b.Navigation("Rental");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceType", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", b =>
                 {
-                    b.HasOne("RentalMVC.Domain.Model.Entity.Node", "Node")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Employee", null)
+                        .WithMany("Types")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", null)
+                        .WithMany("Types")
+                        .HasForeignKey("LessorId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceEntities.Node", "Node")
                         .WithOne("DeviceType")
-                        .HasForeignKey("RentalMVC.Domain.Model.Entity.DeviceType", "NodetId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", "NodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Types")
+                        .HasForeignKey("RentalId");
+
                     b.Navigation("Node");
+
+                    b.Navigation("Rental");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Node", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Node", b =>
                 {
-                    b.HasOne("RentalMVC.Domain.Model.Entity.Node", "ParentNode")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Employee", null)
+                        .WithMany("Nodes")
+                        .HasForeignKey("EmployeeId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", null)
+                        .WithMany("Nodes")
+                        .HasForeignKey("LessorId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceEntities.Node", "ParentNode")
                         .WithMany("ChildNodes")
                         .HasForeignKey("ParentNodeId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Nodes")
+                        .HasForeignKey("RentalId");
+
                     b.Navigation("ParentNode");
+
+                    b.Navigation("Rental");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Rental", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", "Lessor")
+                        .WithOne("Rental")
+                        .HasForeignKey("RentalMVC.Domain.Model.Entity.Rental", "LessorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", "MainContactData")
+                        .WithMany()
+                        .HasForeignKey("MainContactDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lessor");
+
+                    b.Navigation("MainContactData");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Reservation", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Client", "Client")
+                        .WithMany("Reservations")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Reservations")
+                        .HasForeignKey("RentalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Rental");
                 });
 
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.ReservationPosition", b =>
                 {
-                    b.HasOne("RentalMVC.Domain.Model.Entity.Device", "Device")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Client", "Client")
+                        .WithMany("Positions")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceEntities.Device", "Device")
                         .WithMany("Positions")
                         .HasForeignKey("DeviceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceType", "DeviceType")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", "DeviceType")
                         .WithMany("Positions")
                         .HasForeignKey("DeviceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Positions")
+                        .HasForeignKey("RentalId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -752,42 +1302,198 @@ namespace RentalMVC.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Client");
+
                     b.Navigation("Device");
 
                     b.Navigation("DeviceType");
 
+                    b.Navigation("Rental");
+
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Adress", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Client", b =>
                 {
-                    b.Navigation("ContactDetail")
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", "MainContactData")
+                        .WithMany()
+                        .HasForeignKey("MainContactDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", null)
+                        .WithMany("Clients")
+                        .HasForeignKey("RentalId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", "UserDetail")
+                        .WithOne("Client")
+                        .HasForeignKey("RentalMVC.Domain.Model.Entity.UserEntities.Client", "UserDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MainContactData");
+
+                    b.Navigation("UserDetail");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Device", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Client", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("ClientId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("LessorId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", null)
+                        .WithMany("Contacts")
+                        .HasForeignKey("RentalId");
+
+                    b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Employee", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", "MainContactData")
+                        .WithMany()
+                        .HasForeignKey("MainContactDataId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.Rental", "Rental")
+                        .WithMany("Employees")
+                        .HasForeignKey("RentalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", "UserDetail")
+                        .WithOne()
+                        .HasForeignKey("RentalMVC.Domain.Model.Entity.UserEntities.Employee", "UserDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MainContactData");
+
+                    b.Navigation("Rental");
+
+                    b.Navigation("UserDetail");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.ContactData", "MainContactData")
+                        .WithMany()
+                        .HasForeignKey("MainContactDataId");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", "UserDetail")
+                        .WithOne()
+                        .HasForeignKey("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", "UserDetailId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("MainContactData");
+
+                    b.Navigation("UserDetail");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", b =>
+                {
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId1");
+
+                    b.HasOne("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", "Lessor")
+                        .WithMany()
+                        .HasForeignKey("LessorId1");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Lessor");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Device", b =>
                 {
                     b.Navigation("Positions");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceType", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.DeviceType", b =>
                 {
                     b.Navigation("Devices");
 
                     b.Navigation("Positions");
                 });
 
-            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Node", b =>
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.DeviceEntities.Node", b =>
                 {
                     b.Navigation("ChildNodes");
 
-                    b.Navigation("DeviceType")
-                        .IsRequired();
+                    b.Navigation("DeviceType");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Rental", b =>
+                {
+                    b.Navigation("Clients");
+
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Devices");
+
+                    b.Navigation("Employees");
+
+                    b.Navigation("Nodes");
+
+                    b.Navigation("Positions");
+
+                    b.Navigation("Reservations");
+
+                    b.Navigation("Types");
                 });
 
             modelBuilder.Entity("RentalMVC.Domain.Model.Entity.Reservation", b =>
                 {
                     b.Navigation("Positions");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Client", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Positions");
+
+                    b.Navigation("Reservations");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Employee", b =>
+                {
+                    b.Navigation("Devices");
+
+                    b.Navigation("Nodes");
+
+                    b.Navigation("Types");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.Lessor", b =>
+                {
+                    b.Navigation("Contacts");
+
+                    b.Navigation("Devices");
+
+                    b.Navigation("Nodes");
+
+                    b.Navigation("Rental");
+
+                    b.Navigation("Types");
+                });
+
+            modelBuilder.Entity("RentalMVC.Domain.Model.Entity.UserEntities.UserDetail", b =>
+                {
+                    b.Navigation("Client");
                 });
 #pragma warning restore 612, 618
         }

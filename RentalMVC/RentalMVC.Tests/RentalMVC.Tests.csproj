@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\RentalMVC.Application\RentalMVC.Application.csproj" />
     <ProjectReference Include="..\RentalMVC.Domain\RentalMVC.Domain.csproj" />
+    <ProjectReference Include="..\RentalMVC.Infrastructure\RentalMVC.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

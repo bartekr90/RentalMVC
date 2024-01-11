@@ -27,8 +27,19 @@ try
     builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
     builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<Context>();
     builder.Services.AddControllersWithViews();
+
+    //builder.Services.AddAuthorization(options => 
+    //{
+    //    options.AddPolicy("EditRolePolicy", 
+    //        policy => policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
+    //});
+
+    //builder.Services.AddTransient<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
+    //builder.Services.AddTransient<IAuthorizationHandler, SuperAdminHandler>();
+    //custome handlery
 
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure();

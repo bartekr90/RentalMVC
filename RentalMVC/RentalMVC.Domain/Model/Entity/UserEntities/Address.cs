@@ -1,12 +1,11 @@
 ﻿using RentalMVC.Domain.Model.Common;
 
-namespace RentalMVC.Domain.Model.Entity;
+namespace RentalMVC.Domain.Model.Entity.UserEntities;
 
-public class Adress : BaseEntity
+public class Address : BaseEntity
 {
     public required string AddressPartOne { get; set; }
     public required string AddressPartTwo { get; set; }
     public required string City { get; set; }
-    public required string PostalCode { get; set; }
-    public virtual required ContactDetail ContactDetail { get; set; }
+    public required string PostalCode { get; set; }    
 }

@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using RentalMVC.Application.Extensions;
 using RentalMVC.Application.Interfaces;
 using RentalMVC.Application.ViewModels.Reservation;
-using RentalMVC.Domain.Interfaces;
-using RentalMVC.Domain.Model.Entity;
+using ReservationMVC.Domain.Interfaces;
+using System.Text;
 
 namespace RentalMVC.Application.Services;
 
@@ -21,66 +19,94 @@ public class ReservationService : IReservationService
         _mapper = mapper;
     }
 
-    public async Task<int> AddReservationAsync(NewReservationVm viewModel, CancellationToken token = default)
+    public Task<int> AddReservationAsync(NewReservationVm viewModel, CancellationToken cancellationToken = default)
     {
-        var reservation = _mapper.Map<Reservation>(viewModel);
-        reservation.DuringExecution = true;
-        return await _reservationRepo.CreateAsync(reservation, token);
-    }
-
-        
-    //zrobic reszte akcji
-    //dodac logowanie i middlwareExcaptions
-    //zrobic error handling for validate (to sie miże nie udac bo to jest dla mediatoR)
-    //wysłać?
-    //obmyślić w jaki sposób dodawać listę pozycji do formularze rezerwacji
-
-    public async Task<ListReservationVm> GetActiveReservationsVmAsync(CancellationToken token = default)
-    {
-        List<Reservation> dBlist = await _reservationRepo.GetActiveReservationsAsync(token);
-        ArgumentNullException.ThrowIfNull(nameof(dBlist));
-        var reservations = _mapper.Map<List<Reservation>, List<ReservationForListVm>>(dBlist);
-        var count = reservations.Count();
-
-        return new ListReservationVm
-        {
-            Reservations = reservations,
-            Count = count
-        };
+        throw new NotImplementedException();
     }
 
     public ListReservationVm GetActiveReservationsVm()
     {
-        List<ReservationForListVm> reservations = _reservationRepo.GetActiveReservations()
-            .ProjectTo<ReservationForListVm>(_mapper.ConfigurationProvider).ToList();
+        throw new NotImplementedException();
+    }
 
-        ArgumentNullException.ThrowIfNull(nameof(reservations));
-        var count = reservations.Count();
-
-        return new ListReservationVm
-        {
-            Reservations = reservations,
-            Count = count
-        };
+    public Task<ListReservationVm> GetActiveReservationsVmAsync(CancellationToken token = default)
+    {
+        throw new NotImplementedException();
     }
 
     public NewReservationVm GetNewReservationVm()
     {
-        //DateTimeOffset date = DateValidation();
-        var vm = new NewReservationVm(_dateTimeProvider.Now);
-        vm.Title = ViewModelsExtensions.GetReservationTitle(vm);
-        return vm;
+        throw new NotImplementedException();
     }
 
-    private DateTimeOffset DateValidation()
-    {
-        var now = _dateTimeProvider.Now;
+    //public async Task<int> AddReservationAsync(NewReservationVm viewModel, CancellationToken token = default)
+    //{
+    //    var reservation = _mapper.Map<Reservation>(viewModel);
+    //    reservation.DuringExecution = true;
+    //    return await _reservationRepo.CreateAsync(reservation, token);
+    //}
 
-        if (now == DateTimeOffset.MinValue)
-        {
-            DateTimeOffset date = now.Date.ToDateTimeOffset();
-            return date <= now ? date : now;
-        }
-        return now;
+    //public async Task<ListReservationVm> GetActiveReservationsVmAsync(CancellationToken token = default)
+    //{
+    //    //List<Reservation> dBlist = await _reservationRepo.GetActiveReservationsAsync(token);
+    //    ArgumentNullException.ThrowIfNull(nameof(dBlist));
+    //    var reservations = _mapper.Map<List<Reservation>, List<ReservationForListVm>>(dBlist);
+    //    var count = reservations.Count();
+
+    //    return new ListReservationVm
+    //    {
+    //        Reservations = reservations,
+    //        Count = count
+    //    };
+    //}
+
+    //public ListReservationVm GetActiveReservationsVm()
+    //{
+    //    List<ReservationForListVm> reservations = _reservationRepo.GetActiveReservations()
+    //        .ProjectTo<ReservationForListVm>(_mapper.ConfigurationProvider).ToList();
+
+    //    ArgumentNullException.ThrowIfNull(nameof(reservations));
+    //    var count = reservations.Count();
+
+    //    return new ListReservationVm
+    //    {
+    //        Reservations = reservations,
+    //        Count = count
+    //    };
+    //}
+
+    //public NewReservationVm GetNewReservationVm()
+    //{
+    //    //DateTimeOffset date = DateValidation();
+    //    var vm = new NewReservationVm(_dateTimeProvider.Now);
+    //    vm.Title = GetReservationTitle(vm);
+    //    return vm;
+    //}
+
+    //private DateTimeOffset DateValidation()
+    //{
+    //    var now = _dateTimeProvider.Now;
+
+    //    if (now == DateTimeOffset.MinValue)
+    //    {
+    //        DateTimeOffset date = now.Date.ToDateTimeOffset();
+    //        return date <= now ? date : now;
+    //    }
+    //    return now;
+    //}
+    private static string GetReservationTitle( NewReservationVm reservation)
+    {
+        var data = reservation.StartDate.ToString().ToCharArray();
+
+        StringBuilder sb = new StringBuilder();
+        sb.Append(new char[] { 'R', 'e', 's', '_' });
+        sb.Append(data, 0, 10);
+        sb.Append(data, 10, 6);
+
+        sb.Replace('.', '/');
+        sb.Replace(' ', '_');
+        sb.Replace(':', '-');
+
+        return sb.ToString();
     }
 }

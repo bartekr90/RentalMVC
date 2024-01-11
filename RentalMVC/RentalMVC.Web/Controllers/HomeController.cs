@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RentalMVC.Domain.Interfaces;
 using RentalMVC.Web.Models;
 using System.Diagnostics;
@@ -9,13 +10,12 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
-    private readonly IDeviceRepository _deviceRepository;
-
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
     }
-
+    [HttpGet]
+    [Authorize(Policy = "EditRolePolicy")]
     public IActionResult Index()
     {
         return View();

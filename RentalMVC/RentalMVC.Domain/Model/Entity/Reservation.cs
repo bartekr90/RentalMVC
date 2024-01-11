@@ -1,16 +1,19 @@
 ﻿using RentalMVC.Domain.Model.Common;
+using RentalMVC.Domain.Model.Entity.UserEntities;
 
 namespace RentalMVC.Domain.Model.Entity;
 
-public class Reservation : BaseEntity
+public class Reservation : BaseRentalEntity
 {
     public DateTimeOffset StartDate { get; set; }
     public DateTimeOffset EndDate { get; set; }
-    public required string CustomerName { get; set; }
-    public required string CustomerContact { get; set; }
+    public required string ClientName { get; set; }
+    public required string RentalName { get; set; }
     public required string Title { get; set; }
     public bool DuringExecution { get; set; }
     public string? Comments { get; set; }
     public decimal Value { get; set; }
-    public virtual ICollection<ReservationPosition> Positions { get; set; } = new List<ReservationPosition>();
+    public int ClientId { get; set; }
+    public virtual required Client Client { get; set; }
+    public virtual required ICollection<ReservationPosition> Positions { get; set; }
 }
