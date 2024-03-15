@@ -3,10 +3,13 @@
 namespace RentalMVC.Domain.Interfaces;
 
 public interface IClientRepository
-{
-    Task<int> AddAsync(Client client, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Client client, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Client>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<Client> GetAsync(string creatorId, CancellationToken cancellationToken = default);
+{    
+    //Task<IEnumerable<Client>> GetDeletedAsync(CancellationToken token);
+    //Task<IEnumerable<Client>> GetListAsync(CancellationToken token);
+    //Task<Client?> GetByCreatorAsync(string creatorId, CancellationToken token);
+    //Task<Client?> GetByCreatorWithDetailsAsync(string clientId, CancellationToken token);
+    //void CreateClient(Client client);
+    //void UpdateClient(Client client);
+    //void RemoveClient(Client client);
+    //void DeleteClient(Client client);
 }

@@ -3,13 +3,14 @@
 namespace RentalMVC.Domain.Interfaces;
 
 public interface IContactDataRepository
-{
-    Task<int> AddAsync(ContactData contact, CancellationToken cancellationToken = default);
-    Task UpdateAsync(ContactData contact, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<ContactData>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<ContactData> GetByIdAsync(string creatorId, int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<ContactData>> GetAsync(string creatorId, CancellationToken cancellationToken = default);
-    Task<IQueryable<ContactData>> GetAsync(string creatorId, int addressId, CancellationToken cancellationToken = default);
+{  
+    //Task<IEnumerable<ContactData>> GetDeletedAsync(CancellationToken token);
+    //Task<IEnumerable<ContactData>> GetContactDatasAsync(string creatorId, CancellationToken token);
+    //Task<IEnumerable<ContactData>> GetContactDatasWithDetailsAsync(string creatorId, CancellationToken token);
+    //Task<ContactData?> GetByIdAsync(string creatorId, int id, CancellationToken token);
+    //Task<ContactData?> GetWithDetailsAsync(string creatorId, int id, CancellationToken token);
+    //void CreateContactData(ContactData contactData);
+    //void UpdateContactData(ContactData contactData);
+    //void RemoveContactData(ContactData contactData);
+    //void DeleteContactData(ContactData contactData);
 }

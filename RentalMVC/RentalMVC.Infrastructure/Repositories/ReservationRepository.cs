@@ -3,84 +3,13 @@ using ReservationMVC.Domain.Interfaces;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class ReservationRepository : IReservationRepository
+public class ReservationRepository : RepositoryBase<Reservation>, IReservationRepository
 {
-    private readonly Context _context;
-
     public ReservationRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(Reservation reservation, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeactiveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetActiveAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetActiveAsync(string creatorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetByClientAsync(string creatorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Reservation> GetByClientByIdAsync(string creatorId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetByRentalAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Reservation> GetByRentalByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetDuringExecutionAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Reservation>> GetDuringExecutionAsync(string creatorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Reservation reservation, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 
     //public async Task<int> CreateAsync(Reservation reservation, CancellationToken cancellationToken = default)
     //{

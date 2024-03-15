@@ -11,18 +11,18 @@ namespace RentalMVC.Infrastructure;
 
 public class Context : IdentityDbContext
 {
-    public DbSet<Device> Devices { get; set; }
-    public DbSet<DeviceType> DeviceTypes { get; set; }
-    public DbSet<Node> Nodes { get; set; }
-    public DbSet<Address> Addresses { get; set; }
-    public DbSet<Client> Clients { get; set; }
-    public DbSet<ContactData> ContactDatas { get; set; }
-    public DbSet<Employee> Employees { get; set; }
-    public DbSet<Lessor> Lessors { get; set; }
-    public DbSet<UserDetail> UserDetails { get; set; }
-    public DbSet<Rental> Rentals { get; set; }
-    public DbSet<Reservation> Reservations { get; set; }
-    public DbSet<ReservationPosition> ReservationPositions { get; set; }
+    public virtual DbSet<Device> Devices { get; set; }
+    public virtual DbSet<DeviceType> DeviceTypes { get; set; }
+    public virtual DbSet<Node> Nodes { get; set; }
+    public virtual DbSet<Address> Addresses { get; set; }
+    public virtual DbSet<Client> Clients { get; set; }
+    public virtual DbSet<ContactData> ContactDatas { get; set; }
+    public virtual DbSet<Employee> Employees { get; set; }
+    public virtual DbSet<Lessor> Lessors { get; set; }
+    public virtual DbSet<UserDetail> UserDetails { get; set; }
+    public virtual DbSet<Rental> Rentals { get; set; }
+    public virtual DbSet<Reservation> Reservations { get; set; }
+    public virtual DbSet<ReservationPosition> ReservationPositions { get; set; }
 
     public Context(DbContextOptions options) : base(options)
     {
@@ -36,7 +36,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(x => x.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(x => x.Name).IsRequired();
             entity.Property(x => x.CreatorId).IsRequired();
 
@@ -67,7 +67,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(x => x.Name).IsRequired();
             entity.Property(x => x.CreatorId).IsRequired();
             entity.Property(x => x.FullPath).IsRequired();
@@ -103,7 +103,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(x => x.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(x => x.Name).IsRequired();
             entity.Property(x => x.CreatorId).IsRequired();
             entity.Property(x => x.SerialNr).IsRequired();
@@ -133,8 +133,8 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
-            entity.Property(e => e.CreatorId).IsRequired();
+            entity.Property(e => e.ModifierId).IsRequired(false);
+            entity.Property(e => e.CreatorId).IsRequired(); 
 
             entity.HasIndex(e => e.CreatorId).IsUnique();
             entity.HasIndex(e => e.LessorId).IsUnique();
@@ -164,7 +164,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.UserId).IsRequired();
@@ -192,7 +192,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
             entity.Property(e => e.UserId).IsRequired();
             entity.Property(e => e.Name).IsRequired();
@@ -219,7 +219,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
             entity.Property(e => e.Name).IsRequired();
 
@@ -248,7 +248,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
             entity.Property(e => e.NamePart1).IsRequired();
             entity.Property(e => e.NamePart2).IsRequired();
@@ -263,7 +263,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
             entity.Property(e => e.AddressPartOne).IsRequired();
             entity.Property(e => e.AddressPartTwo).IsRequired();
@@ -280,7 +280,7 @@ public class Context : IdentityDbContext
             entity.Property(e => e.Name).IsRequired();
             entity.Property(e => e.LessorId).IsRequired();
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
 
             entity.HasIndex(e => e.MainContactDataId).IsUnique();
             entity.HasIndex(e => e.CreatedAt).IsUnique();
@@ -332,7 +332,7 @@ public class Context : IdentityDbContext
             entity.Property(e => e.Title).IsRequired();
             entity.Property(e => e.Comments).IsRequired(false);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
 
             entity.HasIndex(e => e.CreatorId);
             entity.HasIndex(e => e.RentalId);
@@ -358,7 +358,7 @@ public class Context : IdentityDbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.DeletedBy).IsRequired(false);
-            entity.Property(e => e.ModifiedBy).IsRequired(false);
+            entity.Property(e => e.ModifierId).IsRequired(false);
             entity.Property(e => e.CreatorId).IsRequired();
 
             entity.HasIndex(e => e.CreatorId);

@@ -1,49 +1,25 @@
-﻿using RentalMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RentalMVC.Domain.Interfaces;
+using RentalMVC.Domain.Interfaces.ValueObjects;
 using RentalMVC.Domain.Model.Entity;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class RentalRepository : IRentalRepository
+public class RentalRepository : RepositoryBase<Rental>, IRentalRepository
 {
-    private readonly Context _context;
-
     public RentalRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(Rental rental, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Rental?> GetByIdAsync(RentalId id, CancellationToken token) =>    
+       await FindByCondition(r => r.Id == id.Value && r.Deleted == false)
+            .FirstOrDefaultAsync(token);    
 
-    public Task DeactiveAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<string?> GetNameByIdAsync(RentalId rentalId, CancellationToken token)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Rental> GetAsync(string creatorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Rental>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Rental rental, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+        Rental? rental =  await FindByCondition(r => r.Id == rentalId.Value  && r.Deleted == false)
+            .FirstOrDefaultAsync(token);
+        return rental?.Name;
+    }   
 }

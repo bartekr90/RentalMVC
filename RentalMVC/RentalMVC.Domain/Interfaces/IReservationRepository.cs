@@ -3,19 +3,18 @@
 namespace ReservationMVC.Domain.Interfaces;
 
 public interface IReservationRepository
-{
-    Task<int> AddAsync(Reservation reservation, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Reservation reservation, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int id, CancellationToken cancellationToken = default);
-    Task DeactiveAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetByRentalAsync(int rentalId, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetActiveAsync(int rentalId, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetDuringExecutionAsync(int rentalId, CancellationToken cancellationToken = default);
-    Task<Reservation> GetByRentalByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetByClientAsync(string creatorId, CancellationToken cancellationToken = default);
-    Task<Reservation> GetByClientByIdAsync(string creatorId, int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetActiveAsync(string creatorId, CancellationToken cancellationToken = default);
-    Task<IQueryable<Reservation>> GetDuringExecutionAsync(string creatorId, CancellationToken cancellationToken = default);
+{       
+    //Task<IEnumerable<Reservation>> GetDeletedAsync(CancellationToken token);
+    //Task<IEnumerable<Reservation>> GetByRentalAsync(int rentalId, CancellationToken token);
+    //Task<IEnumerable<Reservation>> GetByRentalWithDetailsAsync(int rentalId, CancellationToken token);
+    //Task<Reservation?> GetByRentalByIdAsync(int rentalId, int id, CancellationToken token);
+    //Task<Reservation?> GetByRentalByIdWithDetailsAsync(int rentalId, int id, CancellationToken token);
+    //Task<IEnumerable<Reservation>> GetByClientAsync(string creatorId, CancellationToken token);
+    //Task<IEnumerable<Reservation>> GetByClientWithDetailsAsync(string creatorId, CancellationToken token);
+    //Task<Reservation?> GetByClientByIdAsync(string creatorId, int id, CancellationToken token);
+    //Task<Reservation?> GetByClientByIdWithDetailsAsync(string creatorId, int id, CancellationToken token);
+    //void CreateReservation(Reservation reservation);
+    //void UpdateReservation(Reservation reservation);
+    //void RemoveReservation(Reservation reservation);
+    //void DeleteReservation(Reservation reservation);
 }

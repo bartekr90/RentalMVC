@@ -25,13 +25,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApplicationTests\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\RentalMVC.Application\RentalMVC.Application.csproj" />
     <ProjectReference Include="..\RentalMVC.Domain\RentalMVC.Domain.csproj" />
     <ProjectReference Include="..\RentalMVC.Infrastructure\RentalMVC.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="SampleData\AddressSample\VMs\" />
+    <Folder Include="SampleData\ClientSample\VMs\" />
+    <Folder Include="SampleData\ContectDataSample\VMs\" />
+    <Folder Include="SampleData\EmployeeSample\VMs\" />
+    <Folder Include="SampleData\LessorSample\VMs\" />
+    <Folder Include="SampleData\NodeSample\VMs\" />
+    <Folder Include="SampleData\RentalSample\VMs\" />
+    <Folder Include="SampleData\ReservationSample\VMs\" />
+    <Folder Include="SampleData\UserDetailSample\VMs\" />
   </ItemGroup>
 
 </Project>

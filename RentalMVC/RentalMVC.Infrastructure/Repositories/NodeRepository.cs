@@ -3,49 +3,13 @@ using RentalMVC.Domain.Model.Entity.DeviceEntities;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class NodeRepository : INodeRepository
+public class NodeRepository : RepositoryBase<Node>, INodeRepository
 {
-    private readonly Context _context;
-
     public NodeRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(Node node, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeactiveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Node>> GetAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Node> GetByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<Node>> GetChildesByParentAsync(int rentalId, int parentNodeId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Node node, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 
     //public async Task<Node> CreateAsync(Node node)
     //{

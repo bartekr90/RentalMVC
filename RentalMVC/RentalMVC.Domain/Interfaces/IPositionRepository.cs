@@ -4,13 +4,17 @@ namespace RentalMVC.Domain.Interfaces;
 
 public interface IPositionRepository
 {
-    Task<int> AddAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default);
-    Task<int> AddListAsync(IQueryable<ReservationPosition> reservationPositions, CancellationToken cancellationToken = default);
-    Task UpdateAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<ReservationPosition>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<IQueryable<ReservationPosition>> GetByRentalAsync(int rentalId, CancellationToken cancellationToken = default);
-    Task<ReservationPosition> GetByRentalByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<ReservationPosition>> GetByClientAsync(int clientId, CancellationToken cancellationToken = default);
-    Task<ReservationPosition> GetByClientByIdAsync(int clientId, int id, CancellationToken cancellationToken = default);
+    //Task<IEnumerable<ReservationPosition>> GetListByClientAsync(int reservationId, int clientId, CancellationToken token);
+    //Task<IEnumerable<ReservationPosition>> GetListByClientWithDetailsAsync(int reservationId, int clientId, CancellationToken token);
+    //Task<ReservationPosition?> GetByClientAsync(int clientId, int id, CancellationToken token);
+    //Task<ReservationPosition?> GetByClientWithDetailsAsync(int clientId, int id, CancellationToken token);
+    //Task<IEnumerable<ReservationPosition>> GetDeletedAsync(CancellationToken token);
+    //Task<IEnumerable<ReservationPosition>> GetListByRentalAsync(int reservationId, int rentalId, CancellationToken token);
+    //Task<IEnumerable<ReservationPosition>> GetListByRentalWithDetailsAsync(int reservationId, int rentalId, CancellationToken token);
+    //Task<ReservationPosition?> GetByIdAsync(int rentalId, int id, CancellationToken token);
+    //Task<ReservationPosition?> GetByIdWithDetailsAsync(int rentalId, int id, CancellationToken token);
+    //void CreateReservationPosition(ReservationPosition position);
+    //void UpdateReservationPosition(ReservationPosition position);
+    //void RemoveReservationPosition(ReservationPosition position);
+    //void DeleteReservationPosition(ReservationPosition position);
 }

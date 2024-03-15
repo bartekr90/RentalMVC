@@ -1,79 +1,43 @@
-﻿using RentalMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RentalMVC.Domain.Interfaces;
+using RentalMVC.Domain.Interfaces.ValueObjects;
 using RentalMVC.Domain.Model.Entity.DeviceEntities;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class DeviceRepository : IDeviceRepository
+public class DeviceRepository : RepositoryBase<Device>, IDeviceRepository
 {
-    private readonly Context _context;
-
     public DeviceRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(Device device, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IEnumerable<Device>> GetListForTypeAsync(RentalId rentalId, DeviceTypeId typeId, CancellationToken token = default) =>
+        await FindByCondition(device => device.RentalId == rentalId.Value && device.DeviceTypeId == typeId.Value && device.Deleted == false)
+            .OrderBy(device => device.Name)
+            .ToListAsync(token);
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Device?> GetByIdAsync(RentalId rentalId, DeviceId id, CancellationToken token = default) =>
+         await FindByCondition(device => device.RentalId == rentalId.Value && device.Id == id.Value && device.Deleted == false)
+            .FirstOrDefaultAsync(token);
 
-    public Task<IQueryable<Device>> GetAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<Device?> GetByIdExtendedAsync(RentalId rentalId, DeviceId id, CancellationToken token = default) =>
+         await FindByCondition(device => device.RentalId == rentalId.Value && device.Id == id.Value && device.Deleted == false)
+            .Include(device => device.Rental)
+            .Include(device => device.DeviceType)
+            .Include(device => device.Positions)
+            .FirstOrDefaultAsync(token);
 
-    public Task<IQueryable<Device>> GetAsync(int rentalId, int deviceTypeId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public void CreateDevice(Device device) =>
+        Create(device);
 
-    public Task<Device> GetByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public void UpdateDevice(Device device) =>
+        Update(device);
 
-    public Task<IQueryable<Device>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public void RemoveDevice(Device device) =>
+        Remove(device);
 
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(Device device, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    //public async Task<int> CreateAsync(Device device, CancellationToken cancellationToken = default)
-    //{
-    //    _context.Devices.Add(device);
-    //    await _context.SaveChangesAsync(cancellationToken);
-    //    return device.Id;
-    //}
-
-    //public async Task<Device?> GetDeviceAsync(int id, CancellationToken cancellationToken = default) =>
-    //    await _context.Devices
-    //         .Include(d => d.DeviceType)
-    //         .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
-
-    //public IQueryable<Device> GetDevicesForType(int deviceTypeId) =>
-    //    _context.Devices.Where(d => d.DeviceTypeId == deviceTypeId);
-
-    //public IQueryable<Device> GetAllDevices() =>
-    //    _context.Devices;
-
-    //public async Task UpdateAsync(Device device, CancellationToken cancellationToken = default)
-    //{
-    //    _context.Devices.Update(device);
-    //    await _context.SaveChangesAsync(cancellationToken);
-    //}
+    public void DeleteDevice(Device device) =>
+        Update(device);
 
 }

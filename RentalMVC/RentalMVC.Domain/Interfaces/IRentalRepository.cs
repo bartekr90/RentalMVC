@@ -1,14 +1,22 @@
-﻿using RentalMVC.Domain.Model.Entity;
+﻿using RentalMVC.Domain.Interfaces.ValueObjects;
+using RentalMVC.Domain.Model.Entity;
 
 namespace RentalMVC.Domain.Interfaces;
 
 public interface IRentalRepository
 {
-    Task <int> AddAsync(Rental rental, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Rental rental, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int id, CancellationToken cancellationToken = default);
-    Task DeactiveAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Rental>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<Rental> GetAsync(string creatorId, CancellationToken cancellationToken = default);
+    Task<Rental?> GetByIdAsync (RentalId id, CancellationToken token);
+    Task<string?> GetNameByIdAsync(RentalId rentalId, CancellationToken token);
+
+    //Task<IEnumerable<Rental>> GetDeletedAsync(CancellationToken token);
+    //Task<IEnumerable<Rental>> GetListAsync(CancellationToken token);
+    //Task<IEnumerable<Rental>> GetListWithDetailsAsync(CancellationToken token);
+    //Task<Rental?> GetByIdAsync(int id, CancellationToken token);
+    //Task<Rental?> GetByIdWithDetailsAsync(int id, CancellationToken token);
+    //Task<Rental?> GetByCreatorIdAsync(string creatorId, CancellationToken token);
+    //Task<Rental?> GetByCreatorIdWithDetailsAsync(string creatorId, CancellationToken token);
+    //void CreateRental(Rental rental);
+    //void UpdateRental(Rental rental);
+    //void RemoveRental(Rental rental);
+    //void DeleteRental(Rental rental);
 }

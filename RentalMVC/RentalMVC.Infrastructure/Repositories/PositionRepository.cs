@@ -3,59 +3,13 @@ using RentalMVC.Domain.Model.Entity;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class PositionRepository : IPositionRepository
+public class PositionRepository : RepositoryBase<ReservationPosition>, IPositionRepository
 {
-    private readonly Context _context;
-
     public PositionRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<int> AddListAsync(IQueryable<ReservationPosition> reservationPositions, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<ReservationPosition>> GetByClientAsync(int clientId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ReservationPosition> GetByClientByIdAsync(int clientId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<ReservationPosition>> GetByRentalAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<ReservationPosition> GetByRentalByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<ReservationPosition>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
 
     //public async Task<int> CreateAsync(ReservationPosition reservationPosition, CancellationToken cancellationToken = default)
     //{

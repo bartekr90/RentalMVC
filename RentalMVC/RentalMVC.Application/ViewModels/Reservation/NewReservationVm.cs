@@ -1,41 +1,39 @@
-﻿using AutoMapper;
-using FluentValidation;
-using RentalMVC.Application.Mapping.Mapping;
-using RentalMVC.Domain.Model.Entity;
+﻿using FluentValidation;
+using RentalMVC.Application.ViewModels.Common;
+using RentalMVC.Application.ViewModels.ReservationPosition;
 
 namespace RentalMVC.Application.ViewModels.Reservation;
 
-public class NewReservationVm : IMapFrom<RentalMVC.Domain.Model.Entity.Reservation>
+public class NewReservationVm : IBaseRentalVm
 {
     public DateTimeOffset StartDate { get; set; }
     public DateTimeOffset EndDate { get; set; }
-    public string? CustomerName { get; set; }
-    public string? CustomerContact { get; set; }
-    public string? Title { get; set; }
+    public required string ClientName { get; set; }
+    public required string RentalName { get; set; }
+    public required string Title { get; set; }
     public string? Comments { get; set; }
-    public virtual ICollection<ReservationPosition>? Positions { get; set; }
+    public decimal Value { get; set; }
+    public int ClientId { get; set; }
+    public required ListPositionExtendedVm Positions { get; set; }
+    public int RentalId { get; set; }
 
     public NewReservationVm()
-    {        
+    {
     }
 
     public NewReservationVm(DateTimeOffset now)
     {
         DateTimeOffset startHour = new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, 0, 0, now.Offset).AddHours(1);
-        
-        CustomerContact = "";
-        CustomerName = "";
+
+        ClientName = "";
+        RentalName = "";
         Title = "";
         Comments = "";
         StartDate = startHour;
         EndDate = startHour.AddHours(1);
     }
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<NewReservationVm, RentalMVC.Domain.Model.Entity.Reservation>()
-            .ForMember(e => e.Positions, opt => opt.Ignore());
-    }
 }
+
 public sealed class NewReservationVmValidator : AbstractValidator<NewReservationVm>
 {
     public NewReservationVmValidator()
@@ -49,11 +47,11 @@ public sealed class NewReservationVmValidator : AbstractValidator<NewReservation
             .NotEmpty()
             .GreaterThanOrEqualTo(x => x.StartDate);
 
-        RuleFor(x => x.CustomerName)
+        RuleFor(x => x.ClientName)
             .NotEmpty()
             .Length(0, 100);
 
-        RuleFor(x => x.CustomerContact)
+        RuleFor(x => x.RentalName)
             .NotEmpty()
             .Length(0, 50);
 

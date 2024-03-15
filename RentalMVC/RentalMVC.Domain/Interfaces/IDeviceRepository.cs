@@ -1,15 +1,15 @@
-﻿using RentalMVC.Domain.Model.Entity.DeviceEntities;
+﻿using RentalMVC.Domain.Interfaces.ValueObjects;
+using RentalMVC.Domain.Model.Entity.DeviceEntities;
 
 namespace RentalMVC.Domain.Interfaces;
 
 public interface IDeviceRepository
 {
-    Task<int> AddAsync(Device device, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Device device, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Device>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<Device> GetByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<Device>> GetAsync(int rentalId, CancellationToken cancellationToken = default);
-    Task<IQueryable<Device>> GetAsync(int rentalId, int deviceTypeId, CancellationToken cancellationToken = default);
+    Task<IEnumerable<Device>> GetListForTypeAsync(RentalId rentalId, DeviceTypeId typeId, CancellationToken token = default);
+    Task<Device?> GetByIdAsync(RentalId rentalId, DeviceId id, CancellationToken token = default);
+    Task<Device?> GetByIdExtendedAsync(RentalId rentalId, DeviceId id, CancellationToken token = default);
+    void CreateDevice(Device device);
+    void UpdateDevice(Device device);
+    void RemoveDevice(Device device);
+    void DeleteDevice(Device device);
 }

@@ -1,75 +1,24 @@
-﻿using RentalMVC.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using RentalMVC.Domain.Interfaces;
+using RentalMVC.Domain.Interfaces.ValueObjects;
 using RentalMVC.Domain.Model.Entity.DeviceEntities;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class DeviceTypeRepository : IDeviceTypeRepository
+public class DeviceTypeRepository : RepositoryBase<DeviceType>, IDeviceTypeRepository
 {
-    private readonly Context _context;
-
     public DeviceTypeRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(DeviceType type, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<DeviceType?> GetByIdAsync(DeviceTypeId id, CancellationToken token) =>
+        await FindByCondition(type => type.Id == id.Value && type.Deleted == false)
+        .FirstOrDefaultAsync(token);
 
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<IEnumerable<DeviceType>> GetTypesListByRentalIdAsync(RentalId rentalId, CancellationToken token) =>
+     await FindByCondition(type => type.RentalId == rentalId.Value && type.Deleted == false)
+         .OrderBy(t => t.Name)
+         .ToListAsync(token);
 
-    public Task<IQueryable<DeviceType>> GetAsync(int rentalId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<DeviceType>> GetAsync(int rentalId, int nodeId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<DeviceType> GetByIdAsync(int rentalId, int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<DeviceType>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(DeviceType type, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    //public async Task<int> CreateAsync(DeviceType deviceType, CancellationToken cancellationToken = default)
-    //{
-    //    _context.DeviceTypes.Add(deviceType);
-    //    await _context.SaveChangesAsync(cancellationToken);
-    //    return deviceType.Id;
-    //}
-
-    //public async Task<DeviceType?> GetTypeAsync(int id, CancellationToken cancellationToken = default) =>
-    //    await _context.DeviceTypes
-    //        .Include(dt => dt.Node)
-    //        .FirstOrDefaultAsync(dt => dt.Id == id, cancellationToken);
-
-    //public IQueryable<DeviceType> GetAllDeviceTypes() =>
-    //    _context.DeviceTypes;
-
-    //public async Task UpdateAsync(DeviceType deviceType, CancellationToken cancellationToken = default)
-    //{
-    //    _context.DeviceTypes.Update(deviceType);
-    //    await _context.SaveChangesAsync(cancellationToken);
-    //}
 }

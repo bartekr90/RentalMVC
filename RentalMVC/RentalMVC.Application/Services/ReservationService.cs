@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using RentalMVC.Application.Interfaces;
+﻿using RentalMVC.Application.Interfaces;
 using RentalMVC.Application.ViewModels.Reservation;
 using ReservationMVC.Domain.Interfaces;
 using System.Text;
@@ -10,13 +9,11 @@ public class ReservationService : IReservationService
 {
     private readonly IDateTimeProvider _dateTimeProvider;
     private readonly IReservationRepository _reservationRepo;
-    private readonly IMapper _mapper;
 
-    public ReservationService(IDateTimeProvider dateTimeProvider, IReservationRepository reservationRepo, IMapper mapper)
+    public ReservationService(IDateTimeProvider dateTimeProvider, IReservationRepository reservationRepo)
     {
         _dateTimeProvider = dateTimeProvider;
         _reservationRepo = reservationRepo;
-        _mapper = mapper;
     }
 
     public Task<int> AddReservationAsync(NewReservationVm viewModel, CancellationToken cancellationToken = default)

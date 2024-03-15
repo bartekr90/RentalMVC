@@ -1,59 +1,21 @@
-﻿using RentalMVC.Domain.Interfaces;
-using RentalMVC.Domain.Model.Entity.UserEntities;
+﻿using Microsoft.EntityFrameworkCore;
+using RentalMVC.Domain.Interfaces;
+using RentalMVC.Domain.Interfaces.ValueObjects;
+using RentalMVC.Domain.Model.Entity;
 
 namespace RentalMVC.Infrastructure.Repositories;
 
-public class UserDetailRepository : IUserDetailRepository
+public class UserDetailRepository : RepositoryBase<UserDetail>, IUserDetailRepository
 {
-    private readonly Context _context;
-
     public UserDetailRepository(Context context)
+        : base(context)
     {
-        _context = context;
     }
 
-    public Task<int> AddAsync(UserDetail userDetail, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDetail> GetAsync(string creatorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDetail> GetByClientIdAsync(string creatorId, int clientId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDetail> GetByEmployeeIdAsync(string creatorId, int employeeId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<UserDetail> GetByLessorIdAsync(string creatorId, int lessorId, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<IQueryable<UserDetail>> GetDeletedAsync(CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task RemoveAsync(int id, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task UpdateAsync(UserDetail userDetail, CancellationToken cancellationToken = default)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<UserDetail?> GetByIdExtendedAsync(UserId creatorId, CancellationToken token) =>    
+         await FindByCondition(ud => ud.CreatorId == creatorId.Value)
+        .Include(ud => ud.Client)
+        .Include(ud => ud.Lessor)
+        .Include(ud => ud.Employee)
+        .SingleOrDefaultAsync(token);    
 }

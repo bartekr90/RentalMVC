@@ -1,33 +1,26 @@
 global using FluentAssertions;
 global using Moq;
-global using RentalMVC.Domain.Model.Entity;
 global using RentalMVC.Domain.Model.Entity.UserEntities;
-global using RentalMVC.Infrastructure;
-global using RentalMVC.Infrastructure.Repositories;
 global using Xunit;
-global using static RentalMVC.Tests.SampleData.AddressSample;
+global using static RentalMVC.Tests.SampleData.AddressSample.AddressSample;
+global using static RentalMVC.Tests.SampleData.ClientSample.ClientSample;
+global using static RentalMVC.Tests.SampleData.ContectDataSample.ContactDataSample;
+global using static RentalMVC.Tests.SampleData.DateTimeSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.DeviceSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.VMs.DeviceExtendedVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.VMs.NewDeviceVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.VMs.DeviceVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.VMs.EditDeviceVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceSample.VMs.ListDeviceVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceTypeSample.DeviceTypeSample;
+global using static RentalMVC.Tests.SampleData.DeviceTypeSample.VMs.ListDeviceTypeVmSample;
+global using static RentalMVC.Tests.SampleData.DeviceTypeSample.VMs.DeviceTypeVmSample;
+global using static RentalMVC.Tests.SampleData.EmployeeSample.EmployeeSample;
+global using static RentalMVC.Tests.SampleData.LessorSample.LessorSample;
+global using static RentalMVC.Tests.SampleData.NodeSample.NodeSample;
+global using static RentalMVC.Tests.SampleData.RentalSample.RentalSample;
+global using static RentalMVC.Tests.SampleData.UserDetailSample.UserDetailSample;
+global using static RentalMVC.Tests.SampleData.ReservationSample.ReservationSample;
+global using static RentalMVC.Tests.SampleData.ReservationSample.ReservationPositionVMs.ListPositionVmSample;
+global using static RentalMVC.Tests.SampleData.ReservationSample.ReservationPositionVMs.PositionVmSample;
 
-//TODO
-/*
-na teraz: 
-
-zmigrowaæ bazê
-  dokoñczyæ schemat polityk.
-
-  przy zak³adaniu konta dodaæ  tabele userdetail i client (trzeba napisaæ akcje i serwisy)
-  napisac jakiœ kontroller ?
-zrobiæ commita
-
-
-    trzeba bêdzie podczas tworzenia workera zaczekac az zwróci baza id user i od razu
-    tworzyc nowa table w której ustawimy dane workerowe
-
-  Zapytaæ ai o dodatkowe warunki jaki mo¿e zawieraæ polityka
-
-czy jest sposób by po wykonaniu migracji wywo³ac kod który doda elementy do bazy?
-napisac zapytanie o seedowaniu bazy na discordzie 
-(dla nowego usera z rol¹ adnim, powi¹zan¹ tabel¹ userdetails, i lessor)
-
-klient zobaczy liste pozycvji i po wybrani elementów przesle swoj¹ listê do kontrolera 
-i ten przygotuje reserwacje z przekazan¹ list¹, która bêdzie mog³a byæ zatwierdzona 
-*/

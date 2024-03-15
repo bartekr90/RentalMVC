@@ -7,7 +7,7 @@ namespace RentalMVC.Domain.Model.Entity;
 public class ReservationPosition : BaseRentalEntity
 {
     public int SequenceNumber { get; set; }
-    public int EquipmentQuantity { get; set; }
+    public int TimeUnits { get; set; }
     public decimal Value { get; set; }
     public int DeviceId { get; set; }
     public virtual required Device Device { get; set; }

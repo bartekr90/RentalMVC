@@ -1,16 +1,16 @@
-﻿using RentalMVC.Domain.Model.Entity.UserEntities;
+﻿using RentalMVC.Domain.Interfaces.ValueObjects;
+using RentalMVC.Domain.Model.Entity;
 
 namespace RentalMVC.Domain.Interfaces;
 
 public interface IUserDetailRepository
 {
-    Task<int> AddAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
-    Task UpdateAsync(UserDetail userDetail, CancellationToken cancellationToken = default);
-    Task DeleteAsync(int id, CancellationToken cancellationToken = default);
-    Task RemoveAsync(int id, CancellationToken cancellationToken = default);
-    Task<IQueryable<UserDetail>> GetDeletedAsync(CancellationToken cancellationToken = default);
-    Task<UserDetail> GetAsync(string creatorId, CancellationToken cancellationToken = default);
-    Task<UserDetail> GetByClientIdAsync(string creatorId, int clientId, CancellationToken cancellationToken = default);
-    Task<UserDetail> GetByLessorIdAsync(string creatorId, int lessorId, CancellationToken cancellationToken = default);
-    Task<UserDetail> GetByEmployeeIdAsync(string creatorId, int employeeId, CancellationToken cancellationToken = default);
+    //Task<IEnumerable<UserDetail>> GetAllAsync(string creatorId, CancellationToken token);
+    //Task<IEnumerable<UserDetail>> GetAllWithDetailsAsync(string creatorId, CancellationToken token);
+    //Task<UserDetail?> GetByIdAsync(string creatorId, CancellationToken token);
+    //void CreateUserDetail(UserDetail userDetail);
+    //void UpdateUserDetail(UserDetail userDetail);
+    //void RemoveUserDetail(UserDetail userDetail);
+    //void DeleteUserDetail(UserDetail userDetail);
+    Task<UserDetail?> GetByIdExtendedAsync(UserId creatorId, CancellationToken token);
 }
