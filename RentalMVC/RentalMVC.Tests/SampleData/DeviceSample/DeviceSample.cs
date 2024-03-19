@@ -202,7 +202,7 @@ internal class DeviceSample
             }
         };
     public static Device[] GetDevicesSample =>
-            new Device[17]
+            new Device[18]
             {
                 new()
                 {
@@ -469,6 +469,20 @@ internal class DeviceSample
                     CreatedAt = GetDateTimeSample[14],
                     Description = "Dane nie poprawne",
                 },
+                new()
+                {
+                    CreatorId = Users.Lessor_006.GetUserId(),
+                    CreatedAt = GetDateTimeSample[0],
+                    Id = 18,
+                    Active = true,
+                    Name = "Sprzęt z grupy która nie ma urzadzeń",
+                    DeviceTypeId = 3,
+                    RentalId = 2,
+                    SerialNr = "TO-1234",
+                    IsAvailable = false,
+                    DeviceType = NewDeviceType,
+                    Rental= NewRental,
+                }
             };
 
 }

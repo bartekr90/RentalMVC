@@ -10,7 +10,7 @@ internal class ListDeviceTypeVmSample
             new()
             {
                 Types = GetDeviceTypeVmSampleWithRentalId2.ToList(),
-                Count = 3
+                Count = 2
             },
             new()
             {

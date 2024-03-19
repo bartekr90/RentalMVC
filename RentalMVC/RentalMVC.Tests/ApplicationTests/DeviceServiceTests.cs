@@ -1,5 +1,4 @@
-﻿using RentalMVC.Application.Interfaces;
-using RentalMVC.Application.Parameters.DeviceService;
+﻿using RentalMVC.Application.Parameters.DeviceService;
 using RentalMVC.Application.Services;
 using RentalMVC.Application.ViewModels.Device;
 using RentalMVC.Application.ViewModels.DeviceType;
@@ -92,20 +91,37 @@ public class DeviceServiceTests
         var sut = new DeviceService(mockRepoWrapper.Object, mockDateTimeProvider.Object);
         expectedDomain.Rental = GetRentalsSample[0];
         expectedDomain.DeviceType = GetDeviceTypesSample[1];
+        expectedDomain.DeviceType.TotalDevices++;
+        DeviceTypeId expDeviceTypeId = new(entryParams.ViewModel.DeviceTypeId);
+        RentalId expRentalId = new(entryParams.ViewModel.RentalId);
 
         // Act
         DeviceVm? result = await sut.AddDeviceAsync(entryParams);
-        Device savedInDb = MockIDeviceRepository.LastCreatedDevice!;
+        Device savedDeviceInDb = MockIDeviceRepository.LastCreatedDevice!;
+        DeviceType savedTypeInDb = MockIDeviceTypeRepository.LastUpdatedDeviceType!;
         result!.Id = deviceIdInDb;
-        DeviceTypeId expectedDeviceTypeId = new(entryParams.ViewModel.DeviceTypeId);
 
         // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectedVm);
-        mockRepoWrapper.Verify(r => r.DeviceTypeRepo.GetByIdAsync(expectedDeviceTypeId, It.IsAny<CancellationToken>()), Times.Once);
-        mockRepoWrapper.Verify(r => r.DeviceRepo.CreateDevice(savedInDb), Times.Once);
-        savedInDb!.Id = deviceIdInDb;
-        savedInDb.Should().BeEquivalentTo(expectedDomain);
+        result.Should().NotBeNull().And.BeEquivalentTo(expectedVm);
+
+        mockRepoWrapper.Verify(r => r.DeviceTypeRepo
+        .GetActiveByIdAsync(expDeviceTypeId, It.IsAny<CancellationToken>()), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.RentalRepo
+        .GetByIdAsync(expRentalId, It.IsAny<CancellationToken>()), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceTypeRepo
+        .UpdateDeviceType(savedTypeInDb), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .CreateDevice(savedDeviceInDb), Times.Once);
+
+        mockRepoWrapper.Verify(r => r
+        .SaveAsync(It.IsAny<CancellationToken>()), Times.Once);
+
+        savedDeviceInDb!.Id = deviceIdInDb;
+        savedDeviceInDb.Should().BeEquivalentTo(expectedDomain);
+        savedTypeInDb.Should().BeEquivalentTo(expectedDomain.DeviceType);
     }
 
     public static TheoryData<AddDeviceParams> AddDeviceAsync_BadTestData =>
@@ -276,15 +292,24 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r.DeviceRepo
             .DeleteDevice(It.IsAny<Device>()), Times.Never);
         mockRepoWrapper.Verify(r => r.DeviceRepo
-            .GetByIdAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()), Times.Once);
+            .GetByIdExtendedAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     public static TheoryData<DeleteDeviceParams, Device, DateTimeOffset> DeleteDeviceAsync_GoodTestData =>
        new()
        {
-           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[3], UserId = Users.Employee_008.GetUserId(), RentalId = 1 }, GetDeletedDeviceSample[0], GetDateTimeSample[6]},
-           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[4], UserId = Users.Employee_008.GetUserId(), RentalId = 1 }, GetDeletedDeviceSample[1], GetDateTimeSample[5]},
-           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[5], UserId = Users.Lessor_006.GetUserId(), RentalId = 1 }, GetDeletedDeviceSample[2], GetDateTimeSample[5]}
+           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[3], UserId = Users.Employee_008.GetUserId(), RentalId = 1 },
+               GetDeletedDeviceSample[0],
+               GetDateTimeSample[6]
+           },
+           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[4], UserId = Users.Employee_008.GetUserId(), RentalId = 1 },
+               GetDeletedDeviceSample[1],
+               GetDateTimeSample[5]
+           },
+           { new DeleteDeviceParams { ViewModel = GetDeviceExtendedVmSample[5], UserId = Users.Lessor_006.GetUserId(), RentalId = 1 },
+               GetDeletedDeviceSample[2],
+               GetDateTimeSample[5]
+           }
        };
 
     [Theory]
@@ -298,18 +323,37 @@ public class DeviceServiceTests
         var mockDateTimeProvider = MockDateTimeProvider.GetMock(expectedDateTime);
         var sut = new DeviceService(mockRepoWrapper.Object, mockDateTimeProvider.Object);
 
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        expectedSaved.DeviceType = GetDeviceTypesSample.FirstOrDefault(t => t.Id == expectedSaved.DeviceTypeId);
+        expectedSaved.DeviceType.TotalDevices--;
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+        expectedSaved.Rental = GetRentalsSample[0];
+
         // Act
         var result = await sut.DeleteDeviceAsync(args);
         Device? savedInDb = MockIDeviceRepository.LastDeletedDevice;
+        DeviceType? savedTypeInDb = MockIDeviceTypeRepository.LastUpdatedDeviceType;
+
 
         // Assert
-        result.Should().Be(1);
+        result.Should().NotBeNull().And.Be(1);
         savedInDb.Should().BeEquivalentTo(expectedSaved);
-        result.Should().NotBeNull();
-        mockRepoWrapper.Verify(r => r
-        .DeviceRepo.GetByIdAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()), Times.Once);
-        mockRepoWrapper.Verify(r => r
-        .DeviceRepo.DeleteDevice(It.IsAny<Device>()), Times.Once);
+        savedTypeInDb.Should().BeEquivalentTo(expectedSaved.DeviceType);
+
+        mockRepoWrapper.Verify(r => r.DeviceTypeRepo
+        .UpdateDeviceType(savedTypeInDb!), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .DeleteDevice(savedInDb!), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .GetByIdExtendedAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .DeleteDevice(It.IsAny<Device>()), Times.Once);
     }
 
     [Fact]
@@ -332,6 +376,44 @@ public class DeviceServiceTests
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>();
+    }
+
+    [Fact]
+    public async Task DeleteDeviceAsync_ShouldThrowArgumentException_WhenTotalNumberIsToLow()
+    {
+        // Arrange
+        var mockRepoWrapper = MockRepositoryWrapper.GetMock();
+        var mockDateTimeProvider = MockDateTimeProvider.GetMock(GetDateTimeSample[3]);
+        var sut = new DeviceService(mockRepoWrapper.Object, mockDateTimeProvider.Object);
+
+        DeviceExtendedVm vm = new()
+        {
+            CreatorId = Users.Lessor_006.GetUserId(),
+            CreatedAt = GetDateTimeSample[0],
+            Id = 18,
+            Active = true,
+            Name = "Sprzęt z grupy która nie ma urzadzeń",
+            DeviceTypeId = 3,
+            RentalId = 2,
+            SerialNr = "TO-1234",
+            IsAvailable = false,
+            RentalName = "SecondRental",
+            TypeName = "Some broke stuff",
+            IsOnPositions = true,
+        };
+
+        DeleteDeviceParams args = new()
+        {
+            ViewModel = vm,
+            RentalId = 2,
+            UserId = Users.Lessor_006.GetUserId()
+        };
+
+        // Act
+        Func<Task> act = async () => await sut.DeleteDeviceAsync(args);
+
+        // Assert
+        await act.Should().ThrowAsync<ArgumentException>().WithMessage("Invalid TotalDevices of type with id: 3");
     }
 
     [Fact]
@@ -359,9 +441,18 @@ public class DeviceServiceTests
     public static TheoryData<DeviceParams, EditDeviceVm, DeviceTypeVm, ListPositionVm> GetDeviceForEditAsync_GoodTestData =>
         new()
         {
-            { new DeviceParams { DeviceId = 12, RentalId = 2 }, GetEditDeviceVmSample[0], GetDeviceTypeVmSampleWithRentalId2[1], GetListPositionVmByDeviceId_12},
-            { new DeviceParams { DeviceId = 13, RentalId = 2 }, GetEditDeviceVmSample[1], GetDeviceTypeVmSampleWithRentalId2[1], GetListPositionVmByDeviceId_13},
-            { new DeviceParams { DeviceId = 14, RentalId = 2 }, GetEditDeviceVmSample[2], GetDeviceTypeVmSampleWithRentalId2[1], GetListPositionVmByDeviceId_14}
+            { new DeviceParams { DeviceId = 12, RentalId = 2 },
+                GetEditDeviceVmSample[0],
+                GetDeviceTypeVmSampleWithRentalId2[0],
+                GetListPositionVmByDeviceId_12},
+            { new DeviceParams { DeviceId = 13, RentalId = 2 },
+                GetEditDeviceVmSample[1],
+                GetDeviceTypeVmSampleWithRentalId2[0],
+                GetListPositionVmByDeviceId_13},
+            { new DeviceParams { DeviceId = 14, RentalId = 2 },
+                GetEditDeviceVmSample[2],
+                GetDeviceTypeVmSampleWithRentalId2[0],
+                GetListPositionVmByDeviceId_14}
         };
 
     [Theory]
@@ -392,7 +483,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(new RentalId(deviceParams.RentalId), It.IsAny<CancellationToken>()), Times.Once);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(new RentalId(deviceParams.RentalId), It.IsAny<CancellationToken>()), Times.Once);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(new RentalId(deviceParams.RentalId), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -413,7 +504,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
     public static TheoryData<DeviceParams> GetDeviceForEditAsync_BadTestData =>
             new()
@@ -442,7 +533,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -464,7 +555,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
     [Fact]
     public async Task GetDeviceForEditAsync_ShouldReturnNull_WhenDeviceIdIsBad()
@@ -485,7 +576,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -507,7 +598,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -520,7 +611,7 @@ public class DeviceServiceTests
 
 
         mockRepoWrapper.Setup(r => r.DeviceTypeRepo
-        .GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()))
+        .GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
 
         // Act
@@ -542,7 +633,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -577,7 +668,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -603,7 +694,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -629,7 +720,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
     [Fact]
     public async Task GetDeviceForEditAsync_ShouldReturnNull_WhenDeviceTypeIsNull()
@@ -656,7 +747,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -670,7 +761,7 @@ public class DeviceServiceTests
         var deviceParams = new DeviceParams { DeviceId = 12, RentalId = 2 };
 
         mockRepoWrapper.Setup(r => r.DeviceTypeRepo
-            .GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()))
+            .GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((IEnumerable<DeviceType>)null!);
 
         // Act
@@ -684,7 +775,7 @@ public class DeviceServiceTests
         mockRepoWrapper.Verify(r => r
         .RentalRepo.GetNameByIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     public static TheoryData<DeviceListParams, ListDeviceVm> GetDevicesListAsync_GoodTestData =>
@@ -796,7 +887,7 @@ public class DeviceServiceTests
         result.Should().BeEquivalentTo(expectedVm);
 
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(newDeviceParams.GetRentalId, It.IsAny<CancellationToken>()), Times.Once);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(newDeviceParams.GetRentalId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -814,7 +905,7 @@ public class DeviceServiceTests
         result.Should().BeNull();
 
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     public static TheoryData<NewDeviceParams> GetNewDeviceAsync_BadTestData =>
@@ -840,7 +931,7 @@ public class DeviceServiceTests
         await act.Should().ThrowAsync<ArgumentException>();
 
         mockRepoWrapper.Verify(r => r
-        .DeviceTypeRepo.GetTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
+        .DeviceTypeRepo.GetActiveTypesListByRentalIdAsync(It.IsAny<RentalId>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1099,33 +1190,33 @@ public class DeviceServiceTests
     public static TheoryData<RemoveDeviceParams, Device, DeviceType, Rental> RemoveDeviceAsync_ValidData =>
     new()
     {
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[0], RentalId = 1 }, 
-            GetDevicesSample[0], 
-            GetDeviceTypesSample[0], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[0], RentalId = 1 },
+            GetDevicesSample[0],
+            GetDeviceTypesSample[0],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[1], RentalId = 1 }, 
-            GetDevicesSample[1], 
-            GetDeviceTypesSample[0], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[1], RentalId = 1 },
+            GetDevicesSample[1],
+            GetDeviceTypesSample[0],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[2], RentalId = 1 }, 
-            GetDevicesSample[2], 
-            GetDeviceTypesSample[0], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[2], RentalId = 1 },
+            GetDevicesSample[2],
+            GetDeviceTypesSample[0],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[3], RentalId = 1 }, 
-            GetDevicesSample[7], 
-            GetDeviceTypesSample[0], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[3], RentalId = 1 },
+            GetDevicesSample[7],
+            GetDeviceTypesSample[0],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[4], RentalId = 1 }, 
-            GetDevicesSample[8], 
-            GetDeviceTypesSample[0], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[4], RentalId = 1 },
+            GetDevicesSample[8],
+            GetDeviceTypesSample[0],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[5], RentalId = 1 }, 
-            GetDevicesSample[9], 
-            GetDeviceTypesSample[1], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[5], RentalId = 1 },
+            GetDevicesSample[9],
+            GetDeviceTypesSample[1],
             GetRentalsSample[0]  },
-        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[11], RentalId = 2 }, 
-            GetDevicesSample[16], 
-            GetDeviceTypesSample[4], 
+        { new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[11], RentalId = 2 },
+            GetDevicesSample[16],
+            GetDeviceTypesSample[4],
             GetRentalsSample[1]  },
     };
 
@@ -1138,6 +1229,7 @@ public class DeviceServiceTests
         var mockRepoWrapper = MockRepositoryWrapper.GetMock();
         var mockDateTimeProvider = MockDateTimeProvider.GetMock();
         var sut = new DeviceService(mockRepoWrapper.Object, mockDateTimeProvider.Object);
+        type.TotalDevices--;
         expectedDomain.DeviceType = type;
         expectedDomain.Rental = rental;
         RentalId rentalId = new(entryParams.ViewModel.RentalId);
@@ -1146,9 +1238,15 @@ public class DeviceServiceTests
         // Act
         int? result = await sut.RemoveDeviceAsync(entryParams);
         Device savedInDb = MockIDeviceRepository.LastRemovedDevice!;
+        DeviceType? savedUpdatedType = MockIDeviceTypeRepository.LastUpdatedDeviceType;
 
         // Assert
         result.Should().Be(1);
+        savedInDb.Should().BeEquivalentTo(expectedDomain);
+        savedUpdatedType.Should().BeEquivalentTo(type);
+
+        mockRepoWrapper.Verify(r => r.DeviceTypeRepo
+        .UpdateDeviceType(savedInDb.DeviceType), Times.Once);
 
         mockRepoWrapper.Verify(r => r.DeviceRepo
         .GetByIdExtendedAsync(rentalId, deviceId, It.IsAny<CancellationToken>()), Times.Once);
@@ -1158,8 +1256,6 @@ public class DeviceServiceTests
 
         mockRepoWrapper.Verify(r => r
         .SaveAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        savedInDb.Should().BeEquivalentTo(expectedDomain);
     }
     public static TheoryData<RemoveDeviceParams, Device> RemoveDeviceAsync_InvalidData =>
     new()
@@ -1214,6 +1310,41 @@ public class DeviceServiceTests
 
         RentalId rentalId = new(entryParams.ViewModel.RentalId);
         DeviceId deviceId = new(entryParams.ViewModel.Id);
+
+        // Act
+        int? result = await sut.RemoveDeviceAsync(entryParams);
+
+        // Assert
+        result.Should().BeNull();
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .GetByIdExtendedAsync(rentalId, deviceId, It.IsAny<CancellationToken>()), Times.Once);
+
+        mockRepoWrapper.Verify(r => r.DeviceRepo
+        .RemoveDevice(It.IsAny<Device>()), Times.Never);
+
+        mockRepoWrapper.Verify(r => r
+        .SaveAsync(It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task RemoveDeviceAsync_ShouldReturnNull_WhenDeviceTypeIsNull()
+    {
+        var mockRepoWrapper = MockRepositoryWrapper.GetMock();
+        var mockDateTimeProvider = MockDateTimeProvider.GetMock();
+        var sut = new DeviceService(mockRepoWrapper.Object, mockDateTimeProvider.Object);
+        var devices = GetDevicesSample;
+        var entryParams = new RemoveDeviceParams { ViewModel = GetDeviceExtendedVmSample[0], RentalId = 1 };
+        RentalId rentalId = new(entryParams.ViewModel.RentalId);
+        DeviceId deviceId = new(entryParams.ViewModel.Id);
+
+        mockRepoWrapper.Setup(r => r.DeviceRepo.GetByIdAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()))
+            .Returns((RentalId rentalId, DeviceId id, CancellationToken token) =>
+            Task.FromResult(devices
+            .FirstOrDefault(d =>
+            d.RentalId == rentalId.Value
+            && d.Id == id.Value
+            && d.Deleted == false)));
 
         // Act
         int? result = await sut.RemoveDeviceAsync(entryParams);

@@ -29,7 +29,7 @@ public class DeviceService : IDeviceService
     /// <returns>A DeviceVm object if successful, null otherwise.</returns>
     public async Task<DeviceVm?> AddDeviceAsync(AddDeviceParams addDeviceParams)
     {
-        if (addDeviceParams?.ViewModel is null 
+        if (addDeviceParams?.ViewModel is null
             || addDeviceParams.RentalId <= 0)
             return null;
 
@@ -37,11 +37,11 @@ public class DeviceService : IDeviceService
             .GetByIdAsync(new RentalId(addDeviceParams.ViewModel.RentalId), addDeviceParams.Token);
 
         DeviceType? deviceType = await _repoWrapper.DeviceTypeRepo
-            .GetByIdAsync(new DeviceTypeId(addDeviceParams.ViewModel.DeviceTypeId), addDeviceParams.Token);
+            .GetActiveByIdAsync(new DeviceTypeId(addDeviceParams.ViewModel.DeviceTypeId), addDeviceParams.Token);
 
-        if (rental is null 
-            || deviceType is null 
-            || rental.Id != deviceType.RentalId 
+        if (rental is null
+            || deviceType is null
+            || rental.Id != deviceType.RentalId
             || addDeviceParams.RentalId != rental.Id)
             return null;
 
@@ -50,7 +50,12 @@ public class DeviceService : IDeviceService
         if (device is null)
             return null;
 
+        deviceType.IncreaseTotalNumber();
+
+        _repoWrapper.DeviceTypeRepo.UpdateDeviceType(deviceType);
+
         _repoWrapper.DeviceRepo.CreateDevice(device);
+
         int changes = await _repoWrapper.SaveAsync(addDeviceParams.Token);
 
         return changes > 0 ? device.MapDeviceToDeviceVm() : null;
@@ -59,24 +64,30 @@ public class DeviceService : IDeviceService
     /// <summary>
     /// Deletes a device asynchronously.
     /// </summary>
-    /// <param name="args">The parameters for deleting the device.</param>
+    /// <param name="entryParams">The parameters for deleting the device.</param>
     /// <returns>The number of changes if successful, null otherwise.</returns>
-    public async Task<int?> DeleteDeviceAsync(DeleteDeviceParams args)
+    public async Task<int?> DeleteDeviceAsync(DeleteDeviceParams entryParams)
     {
-        if (args?.ViewModel is null || string.IsNullOrWhiteSpace(args.UserId) || args.RentalId != args.ViewModel.RentalId)
+        if (entryParams?.ViewModel is null
+            || string.IsNullOrWhiteSpace(entryParams.UserId)
+            || entryParams.RentalId != entryParams.ViewModel.RentalId)
             return null;
 
         Device? device = await _repoWrapper.DeviceRepo
-            .GetByIdAsync(new RentalId(args.ViewModel.RentalId), new DeviceId(args.ViewModel.Id), args.Token);
+            .GetByIdExtendedAsync(new RentalId(entryParams.ViewModel.RentalId), new DeviceId(entryParams.ViewModel.Id), entryParams.Token);
 
-        if (device is null || _dateTimeProvider is null)
+        if (device?.DeviceType is null
+            || _dateTimeProvider is null)
             return null;
 
-        device.DeleteSetup(args.UserId, _dateTimeProvider);
+        device.DeleteSetup(entryParams.UserId, _dateTimeProvider);
         device.IsAvailable = false;
 
+        device.DeviceType.DecreaseTotalNumber();
+        _repoWrapper.DeviceTypeRepo.UpdateDeviceType(device.DeviceType);
+
         _repoWrapper.DeviceRepo.DeleteDevice(device);
-        int changes = await _repoWrapper.SaveAsync(args.Token);
+        int changes = await _repoWrapper.SaveAsync(entryParams.Token);
 
         return changes > 0 ? changes : null;
     }
@@ -107,7 +118,8 @@ public class DeviceService : IDeviceService
         var devices = await _repoWrapper.DeviceRepo
             .GetListForTypeAsync(deviceListParams.GetRentalId, deviceListParams.GetTypeId, deviceListParams.Token);
 
-        if (devices is { } && devices.Any())
+        if (devices is { }
+        && devices.Any())
         {
             List<DeviceVm> deviceVms = devices
                 .Select(device => device.MapDeviceToDeviceVm())
@@ -138,7 +150,9 @@ public class DeviceService : IDeviceService
         Device? device = await _repoWrapper.DeviceRepo
             .GetByIdExtendedAsync(deviceParams.GetRentalId, deviceParams.GetDeviceId, deviceParams.Token);
 
-        if (device is null || device.DeviceType is null || !device.IsAvailable)
+        if (device is null
+            || device.DeviceType is null
+            || !device.IsAvailable)
             return null;
 
         string? rentalName = await _repoWrapper.RentalRepo
@@ -171,9 +185,10 @@ public class DeviceService : IDeviceService
     private async Task<ListDeviceTypeVm?> DownloadTypesListVm(RentalId rentalId, CancellationToken token)
     {
         var retrievedTypes = await _repoWrapper.DeviceTypeRepo
-            .GetTypesListByRentalIdAsync(rentalId, token);
+            .GetActiveTypesListByRentalIdAsync(rentalId, token);
 
-        if (retrievedTypes is null || !retrievedTypes.Any())
+        if (retrievedTypes is null
+            || !retrievedTypes.Any())
             return null;
 
         List<DeviceTypeVm> mappedTypes = retrievedTypes
@@ -228,14 +243,14 @@ public class DeviceService : IDeviceService
 
         var deviceToSave = upDeviceParams.ViewModel.MapEditDeviceVmToDevice(device);
 
-        if (deviceToSave is null) 
+        if (deviceToSave is null)
             return null;
 
         _repoWrapper.DeviceRepo.UpdateDevice(deviceToSave);
 
         int changes = await _repoWrapper.SaveAsync(upDeviceParams.Token);
 
-        return changes > 0 ? device.MapDeviceToDeviceVm() : null;       
+        return changes > 0 ? device.MapDeviceToDeviceVm() : null;
     }
 
     /// <summary>
@@ -252,9 +267,12 @@ public class DeviceService : IDeviceService
         Device? device = await _repoWrapper.DeviceRepo
             .GetByIdExtendedAsync(entryParams.GetRentalId, new DeviceId(entryParams.ViewModel.Id), entryParams.Token);
 
-        if (device is null
+        if (device?.DeviceType is null
             || device.Positions?.Any() is true)
             return null;
+
+        device.DeviceType.DecreaseTotalNumber();
+        _repoWrapper.DeviceTypeRepo.UpdateDeviceType(device.DeviceType);
 
         _repoWrapper.DeviceRepo.RemoveDevice(device);
         int changes = await _repoWrapper.SaveAsync(entryParams.Token);

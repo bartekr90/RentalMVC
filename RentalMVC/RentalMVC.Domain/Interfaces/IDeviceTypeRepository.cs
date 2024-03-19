@@ -5,7 +5,7 @@ namespace RentalMVC.Domain.Interfaces;
 
 public interface IDeviceTypeRepository
 {
-    Task<DeviceType?> GetByIdAsync(DeviceTypeId id, CancellationToken token);
-    Task<IEnumerable<DeviceType>> GetTypesListByRentalIdAsync(RentalId rentalId, CancellationToken token);
-    
+    Task<DeviceType?> GetActiveByIdAsync(DeviceTypeId id, CancellationToken token);
+    Task<IEnumerable<DeviceType>> GetActiveTypesListByRentalIdAsync(RentalId rentalId, CancellationToken token);
+    void UpdateDeviceType(DeviceType deviceType);
 }

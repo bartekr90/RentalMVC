@@ -12,13 +12,22 @@ public class DeviceTypeRepository : RepositoryBase<DeviceType>, IDeviceTypeRepos
     {
     }
 
-    public async Task<DeviceType?> GetByIdAsync(DeviceTypeId id, CancellationToken token) =>
-        await FindByCondition(type => type.Id == id.Value && type.Deleted == false)
+    public async Task<DeviceType?> GetActiveByIdAsync(DeviceTypeId id, CancellationToken token) =>
+        await FindByCondition(type => 
+        type.Id == id.Value 
+        && type.Deleted == false
+        && type.Active == true)
         .FirstOrDefaultAsync(token);
 
-    public async Task<IEnumerable<DeviceType>> GetTypesListByRentalIdAsync(RentalId rentalId, CancellationToken token) =>
-     await FindByCondition(type => type.RentalId == rentalId.Value && type.Deleted == false)
+    public async Task<IEnumerable<DeviceType>> GetActiveTypesListByRentalIdAsync(RentalId rentalId, CancellationToken token) =>
+     await FindByCondition(type => 
+     type.RentalId == rentalId.Value 
+     && type.Deleted == false
+     && type.Active == true)
          .OrderBy(t => t.Name)
          .ToListAsync(token);
 
+    public void UpdateDeviceType(DeviceType deviceType) =>
+        Update(deviceType);
+    
 }

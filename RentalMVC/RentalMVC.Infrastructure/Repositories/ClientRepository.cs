@@ -48,6 +48,5 @@ public class ClientRepository : RepositoryBase<Client>, IClientRepository
     public void DeleteClient(Client client)
     {
         Update(client);
-    }
-   
+    }   
 }

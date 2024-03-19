@@ -25,19 +25,28 @@ internal class MockIDeviceRepository
         mock.Setup(m => m.GetListForTypeAsync(It.IsAny<RentalId>(), It.IsAny<DeviceTypeId>(), It.IsAny<CancellationToken>()))
             .Returns((RentalId rentalId, DeviceTypeId typeId, CancellationToken token) =>
             Task.FromResult(devices
-            .Where(d => d.RentalId == rentalId.Value && d.DeviceTypeId == typeId.Value && d.Deleted == false)
+            .Where(d => 
+            d.RentalId == rentalId.Value 
+            && d.DeviceTypeId == typeId.Value
+            && d.Deleted == false)
             .AsEnumerable()));
 
         mock.Setup(m => m.GetByIdAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()))
             .Returns((RentalId rentalId, DeviceId id, CancellationToken token) =>
             Task.FromResult(devices
-            .FirstOrDefault(d => d.RentalId == rentalId.Value && d.Id == id.Value && d.Deleted == false)));
+            .FirstOrDefault(d => 
+            d.RentalId == rentalId.Value 
+            && d.Id == id.Value 
+            && d.Deleted == false)));
         
         mock.Setup(m => m.GetByIdExtendedAsync(It.IsAny<RentalId>(), It.IsAny<DeviceId>(), It.IsAny<CancellationToken>()))
         .Returns((RentalId rentalId, DeviceId id, CancellationToken token) =>
         {
             var device = devices
-            .FirstOrDefault(d => d.RentalId == rentalId.Value && d.Id == id.Value && d.Deleted == false);
+            .FirstOrDefault(d => 
+            d.RentalId == rentalId.Value 
+            && d.Id == id.Value 
+            && d.Deleted == false);
 
             if (device != null)
             {
@@ -70,7 +79,9 @@ internal class MockIDeviceRepository
 
         mock.Setup(m => m.DeleteDevice(It.IsAny<Device>()))
             .Callback((Device device) => 
-            { 
+            {
+                if (device.Positions.IsNullOrEmpty())
+                    device.Positions = null;
                 LastDeletedDevice = device; 
             });
 

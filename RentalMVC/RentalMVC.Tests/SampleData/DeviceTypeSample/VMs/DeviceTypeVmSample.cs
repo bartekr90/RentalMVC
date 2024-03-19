@@ -45,23 +45,8 @@ internal class DeviceTypeVmSample
             }
         };
     public static DeviceTypeVm[] GetDeviceTypeVmSampleWithRentalId2 =>
-        new DeviceTypeVm[3]
-        {
-            new()
-            {
-                CreatorId = Users.Lessor_007.GetUserId(),
-                CreatedAt = GetDateTimeSample[12],
-                Id = 3,
-                Active = false,
-                Name = "Some broke stuff",
-                NodeId = 3,
-                FullPath = "GeneralGroup/Medium weight equipment",
-                RentalId = 2,
-                Price = 10,
-                HasDevices = false,
-                TotalDevices = 0,
-                BorrowedDevices = 0,                
-            },
+        new DeviceTypeVm[2]
+        {            
             new()
             {
                 CreatorId = Users.Lessor_007.GetUserId(),
